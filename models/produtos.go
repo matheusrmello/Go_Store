@@ -1,7 +1,7 @@
 package models
 
 import (
-	"go_store/db"
+	"main/db"
 )
 
 type Produto struct {
@@ -14,7 +14,7 @@ type Produto struct {
 func SearchProducts() []Produto {
 	db := db.ConnectionDB()
 
-	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
+	selectDeTodosOsProdutos, err := db.Query("select * from products")
 	if err != nil {
 		panic(err.Error())
 	}
