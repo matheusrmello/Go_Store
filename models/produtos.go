@@ -1,21 +1,18 @@
-package main
+package models
 
 import (
-	"html/template"
-	"net/http"
-
-	_ "github.com/lib/pq"
+	"go_store/db"
 )
 
-var temp = template.Must(template.ParseGlob("templates/*.html"))
-
-func main() {
-	http.HandleFunc("/", index)
-	http.ListenAndServe(":8000", nil)
+type Produto struct {
+	Nome, Descricao string
+	Preco           float64
+	Quantidade      int
+	Id              int
 }
 
-func index(w http.ResponseWriter, r *http.Request) {
-	db := ConnectionDB()
+func SearchProducts() []Produto {
+	db := db.ConnectionDB()
 
 	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
 	if err != nil {
@@ -42,7 +39,6 @@ func index(w http.ResponseWriter, r *http.Request) {
 
 		produtos = append(produtos, p)
 	}
-
-	temp.ExecuteTemplate(w, "Index", produtos)
 	defer db.Close()
+	return produtos
 }
