@@ -14,7 +14,7 @@ type Produto struct {
 func SearchProducts() []Produto {
 	db := db.ConnectionDB()
 
-	selectDeTodosOsProdutos, err := db.Query("select * from products")
+	selectDeTodosOsProdutos, err := db.Query("select * from produtos")
 	if err != nil {
 		panic(err.Error())
 	}
@@ -36,6 +36,7 @@ func SearchProducts() []Produto {
 		p.Descricao = descricao
 		p.Preco = preco
 		p.Quantidade = quantidade
+		p.Id = id
 
 		produtos = append(produtos, p)
 	}
@@ -46,11 +47,22 @@ func SearchProducts() []Produto {
 func CriaNovoProduto(nome, descricao string, preco float64, quantidade int) {
 	db := db.ConnectionDB()
 
-	insertDados, err := db.Prepare("insert into products(nome, descricao, preco, quantidade) values($1, $2, $3, $4)")
+	insertDados, err := db.Prepare("insert into produtos(nome, descricao, preco, quantidade) values($1, $2, $3, $4)")
 	if err != nil {
 		panic(err.Error())
 	}
 
 	insertDados.Exec(nome, descricao, preco, quantidade)
 	defer db.Close()
+}
+
+func DeletaProduto(Id string) {
+	db := db.ConnectionDB()
+	deletarOProduto, err := db.Prepare("delete from produtos where id=$1")
+	if err != nil {
+		panic(err.Error())
+	}
+	deletarOProduto.Exec(Id)
+	defer db.Close()
+
 }
